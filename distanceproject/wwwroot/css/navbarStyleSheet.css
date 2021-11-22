@@ -1,0 +1,22 @@
+﻿
+
+.nava {
+    margin-right: 40px;
+   /* font-weight: bold;*/
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #ff5252;
+    color: #fff;
+   
+}
+    .nava:hover {
+        text-decoration: none;
+        border-radius: 5px;
+        padding: 5px;
+        color: #ff5252;
+        background-color: #fff;
+        border: 2px solid #ff5252;
+        border-right: none;
+        border-left: none;
+        border-top: none;
+    }

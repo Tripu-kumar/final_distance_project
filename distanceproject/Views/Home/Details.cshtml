@@ -1,0 +1,121 @@
+﻿@model distanceproject.Models.distance
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+
+<html>
+<head>
+
+    <link href="~/css/DetailStyleSheet.css" rel="stylesheet" />
+    
+
+    <style>
+        #dvMap {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+
+    <div class="container mt-5 p-3 shadow  bg-white rounded-right rounded-3">
+        <div class="row ">
+            <div class="col-md-6">
+                <div id="dvMap">
+                    <script>
+                    var map, markerA, markerB;
+                    var mk1, mk2, distance, distance_kms;
+                    var line;
+
+                    function initMap() {
+                        var map = new google.maps.Map(document.getElementById('dvMap'), {
+                            center: { lat: 13.0826802, lng: 80.2707184 },
+                            zoom: 13,
+                            mapTypeId: 'roadmap'
+                        });
+
+                        const A = { lat: @ViewData["from_lat"], lng: @ViewData["from_lng"] };
+                        const T = { lat: @ViewData["to_lat"], lng: @ViewData["to_lng"] };
+
+                        mk1 = new google.maps.Marker({ position: A, map: map, draggable: true });
+                        mk2 = new google.maps.Marker({ position: T, map: map, draggable: true });
+                        const bounds = new google.maps.LatLngBounds(
+                            mk1.getPosition(),
+                            mk2.getPosition()
+                        );
+                        map.fitBounds(bounds);
+                        google.maps.event.addListener(mk1, "position_changed", update);
+                        google.maps.event.addListener(mk2, "position_changed", update);
+
+                        line = new google.maps.Polyline({ path: [A, T], map: map });
+
+
+                        update();
+
+                    }
+                    function update() {
+                        const path = [mk1.getPosition(), mk2.getPosition()];
+                        line.setPath(path);
+
+                        console.log(path);
+                        var R = 3958.8; // Radius of the Earth in miles
+                        var rlat1 = mk1.position.lat() * (Math.PI / 180); // Convert degrees to radians
+                        var rlat2 = mk2.position.lat() * (Math.PI / 180); // Convert degrees to radians
+                        var difflat = rlat2 - rlat1; // Radian difference (latitudes)
+                        var difflon = (mk2.position.lng() - mk1.position.lng()) * (Math.PI / 180); // Radian difference (longitudes)
+                        var d = 2 * R * Math.sin(Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2)));
+                        distance = d * 1.609344;
+
+
+
+
+                    }
+
+                    </script>
+
+                    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAg6x260qOdwA8tFV3c7epFgdLLLfCqMaA&callback=initMap&libraries=geometry" async defer>
+                    </script>
+
+                </div>
+            </div>
+            @*<p id="msg"></p>*@
+       
+            <div class="col-md-6 mt-5">
+               <div class="head"><h2 class="heading">REPORT</h2></div> j
+                <table cellpadding="10" cellspacing="10">
+
+                    <tr>
+                        <th>SAVED DATE:</th>
+                        <td> @Html.DisplayFor(model => model.date) </td>
+                    </tr>
+                    <tr>
+                        <th>FROM LOCATION LATITUDE:</th>
+                        <td> @Html.DisplayFor(model => model.from_loc_lat)</td>
+                    </tr>
+                    <tr><th>FROM LOCATION LONGITUDE:</th><td>@Html.DisplayFor(model => model.from_loc_lng)</td></tr>
+                    <tr><th>TO LOCATION LATITUDE:</th><td>@Html.DisplayFor(model => model.to_location_lat)</td></tr>
+                    <tr><th>TO LOCATION LONGITUDE:</th><td> @Html.DisplayFor(model => model.to_location_lng)</td></tr>
+                    <tr><th>DISTANCE IN KMS:</th><td> @Html.DisplayFor(model => model.dist)</td></tr>
+
+
+
+
+                </table>
+                <div class="buttons">
+                    <a class="LinkButton" asp-action="List" asp-controller="Home">Back to List</a>
+                    
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿#dvMap {
+    height: 110%;
+    width: 100%;
+}
+
+.input-icons i {
+    position: absolute;
+}
+
+.input-icons {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.icon {
+    padding: 10px;
+    color: #ff5252;
+    min-width: 50px;
+    text-align: center;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+/* h2 {
+        color: #ff5252;
+    }*/
+.LinkButton:hover {
+    background-color: white;
+    color: #ff5252;
+    text-decoration: none;
+}
+
+.LinkButton {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    text-decoration: none;
+    padding: 4px;
+    border-color: #ff5252;
+    background-color: #ff5252;
+    color: white;
+    border-radius: 5px;
+    width: 30%;
+}
+
+.buttons {
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+}
+.heading {
+    position: relative;
+    padding: 0 0 10px;
+    margin-bottom: 10px;
+    /*color: #012443;*/
+}
+
+    .heading:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        height: 4px;
+        width: 50px;
+        border-radius: 2px;
+        background-color: #ff5252;
+    }

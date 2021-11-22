@@ -1,0 +1,18 @@
+﻿.LinkButton:hover {
+    background-color: white;
+    color: #ff5252;
+    text-decoration: none;
+}
+
+.LinkButton {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    text-decoration: none;
+    padding: 4px;
+    border-color: #ff5252;
+    background-color: #ff5252;
+    color: white;
+    border-radius: 5px;
+    width: 30%;
+}
+

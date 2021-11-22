@@ -1,0 +1,147 @@
+﻿@model distanceproject.Models.distance
+@{
+    ViewData["Title"] = "Home Page";
+}
+<link href="~/css/IndexStyleSheet.css" rel="stylesheet" />
+
+<div class="container-fluid mt-2">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="dvMap">
+                <script>
+                    var map, markerA, markerB;
+                    var mk1, mk2, distance, distance_kms,dist;
+                    var line;
+                    var infoWindow;
+                    var infoWindowformk2;
+
+                    function initMap() {
+                        var map = new google.maps.Map(document.getElementById('dvMap'), {
+                            center: { lat: 13.0826802, lng: 80.2707184 },
+                            zoom: 13,
+                            mapTypeId: 'roadmap'
+                        });
+
+
+                        const A = { lat: 26.465391, lng: 77.76809 };
+                        const T = { lat: 10.876377, lng: 77.93462 };
+
+                        mk1 = new google.maps.Marker({ position: A, map: map, draggable: true });
+                        mk2 = new google.maps.Marker({ position: T, map: map, draggable: true });
+                        const bounds = new google.maps.LatLngBounds(
+                            mk1.getPosition(),
+                            mk2.getPosition()
+                        );
+                       
+                        map.fitBounds(bounds);
+                       
+                        google.maps.event.addListener(mk1, "position_changed", update);
+                        google.maps.event.addListener(mk2, "position_changed", update);
+
+                        line = new google.maps.Polyline({ path: [A, T], map: map });
+                       
+                     
+                         
+                        dist = update();
+                      
+
+                        google.maps.event.addListener(mk1, 'click', function () { infoWindow.open(map, mk1); });
+                        infoWindow.close();
+                        /*google.maps.event.addListener(mk1, 'dragend', function () { infoWindow.close() });*/
+                        
+                       
+                        google.maps.event.addListener(mk2, 'click', function () { infoWindowformk2.open(map, mk2); });
+                        infoWindowformk2.close();
+                        /*google.maps.event.addListener(mk2, 'dragend', function () { infoWindowformk2.close() });*/
+                        
+                    }
+                    
+                    function update() {
+                        const path = [mk1.getPosition(), mk2.getPosition()];
+                        
+                        line.setPath(path);
+                       
+                        var R = 3958.8; // Radius of the Earth in miles
+                        var rlat1 = mk1.position.lat() * (Math.PI / 180); // Convert degrees to radians
+                        var rlat2 = mk2.position.lat() * (Math.PI / 180); // Convert degrees to radians
+                        var difflat = rlat2 - rlat1; // Radian difference (latitudes)
+                        var difflon = (mk2.position.lng() - mk1.position.lng()) * (Math.PI / 180); // Radian difference (longitudes)
+                        var d = 2 * R * Math.sin(Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2)));
+                        
+                        distance = d * 1.609344;
+                         infoWindow = new google.maps.InfoWindow({
+                            content: "lat:" + mk1.position.lat() + ",lng:" + mk1.position.lng(),
+
+                        });
+                         infoWindowformk2 = new google.maps.InfoWindow({
+                            content: "lat:" + mk2.position.lat() + ",lng:" + mk2.position.lng(),
+
+                        });
+                       
+
+                        
+
+                        document.getElementById("origin_lat").value = path[0].lat();
+                        document.getElementById("origin_lng").value = path[0].lng();
+                        document.getElementById("destination_lat").value = path[1].lat();
+                        document.getElementById("destination_lng").value = path[1].lng();
+                        document.getElementById("distance").value = distance.toFixed(2);
+                        return distance;
+                    }
+
+                </script>
+                
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAg6x260qOdwA8tFV3c7epFgdLLLfCqMaA&callback=initMap&libraries=geometry" async defer>
+                </script>
+                @*<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap&libraries=geometry"></script>*@
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2 class="mb-3 text-center">Distance Calculator</h2>
+            
+
+            <form asp-action="Index">
+                <div class="form-group">
+                    <h5> <label asp-for="from_loc_lat" class="control-label">From-Latitude:</label></h5>
+                    <div class="input-icons">
+                        <i class='fas fa-map-marker-alt icon'></i>
+                        <input asp-for="from_loc_lat" class="input-field" id="origin_lat" />
+                        </div>
+                    </div>
+                <div class="form-group">
+                    <h5> <label asp-for="from_loc_lng" class="control-label">From-Longitude:</label></h5>
+                    <div class="input-icons">
+                        <i class='fas fa-map-marker-alt icon'></i>
+                        <input asp-for="from_loc_lng" class="input-field" id="origin_lng" />
+                        </div>
+                    </div>
+                <div class="form-group">
+                    <h5>  <label asp-for="to_location_lat" class="control-label">To-Latitude:</label></h5>
+                    <div class="input-icons">
+                        <i class='fas fa-map-marker-alt icon'></i>
+                        <input asp-for="to_location_lat" class="input-field" id="destination_lat" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h5> <label asp-for="to_location_lng" class="control-label">To-Longitude:</label></h5>
+                        <div class="input-icons">
+                            <i class='fas fa-map-marker-alt icon '></i>
+                            <input asp-for="to_location_lng" class="input-field" id="destination_lng" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h5> <label asp-for="dist" class="control-label"> Distance-In-Kms:</label></h5>
+                        <div class="input-icons">
+                            <i class='fa fa-location-arrow icon '></i>
+                            <input asp-for="dist" class="input-field" id="distance" />
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            <input type="submit" value="Save" class="LinkButton" />
+                        </div>
+</form>
+            @*<a class="btn btn-primary" asp-action="list" asp-controller="Home">View Reports</a>*@
+        </div>
+    </div>
+
+</div>
